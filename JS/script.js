@@ -73,11 +73,13 @@ $($activities).change(function(event) {
   activities.each(function(index, element) {
     const inputDateTime = $(activities[index]).attr("data-day-and-time");
 
-    if (dateTime === inputDateTime) {
+    if ((dateTime === inputDateTime) && (clicked[0] !== activities[index])) {
       if (clicked.prop("checked") === false) {
         activities[index].disabled = false;
+        console.log("false");
       } else {
         activities[index].disabled = true;
+        console.log("true");
       }
     }
   });
@@ -94,7 +96,6 @@ const paypalDiv = $('#paypal').hide();
 
 paymentTypes.change(function(event) {
   const selected = $(event.target);
-  console.log(selected);
   if (selected.val() === "Bitcoin") {
     ccDiv.hide();
     paypalDiv.hide();
@@ -111,91 +112,107 @@ paymentTypes.change(function(event) {
 })
 
 //***Form Validation Section***
+const nameInput = $('#name');
+const nameValidation = /([^\s])/;
+const nameError = $("<p></p>").text("Please enter a name").css("color", "red");
+nameInput.after(nameError);
+nameError.hide();
+
+function isValidName() {
+  if (nameValidation.test($(nameInput).val())) {
+    nameError.hide();
+    return true;
+  } else {
+    nameError.show();
+    return false;
+  }
+}
+
+const emailInput = $('#mail');
+const emailValidation = /^[^@]+@[^@.]+\.[a-z]+$/i;
+const emailError = $("<p></p>").text("Please enter a valid email address").css("color", "red");
+emailInput.after(emailError);
+emailError.hide();
+
+function isValidEmail() {
+  if (emailValidation.test($(emailInput).val())) {
+    emailError.hide();
+    return true;
+  } else {
+    emailError.show();
+    return false;
+  }
+}
+
+function isValidActivity() {
+  const activitySelect = $('.activities');
+  const activityError = $("<p></p>").text("You must select at least one activity").css("color", "red");
+  activitySelect.append($(activityError));
+  activitySelect.after(activityError);
+  activityError.hide();
+
+  if ($('input[type="checkbox"]').prop("checked")) {
+    activityError.hide();
+    return true;
+  } else {
+    activityError.show();
+    return false;
+  }
+}
+
+function isValidCC() {
+  const ccNum = $('#cc-num');
+  const ccNumVal = /^(?:4[0-9]{12}(?:[0-9]{3})?)$/;
+  const ccNumError = $("<p></p>").text("Please enter a valid credit card number").css("color", "red");
+  ccNum.after(ccNumError);
+  ccNumError.hide();
+
+  if (ccNumVal.test($(ccNum).val())) {
+    ccNumError.hide();
+    return true;
+  } else {
+    ccNumError.show();
+    return false;
+  }
+}
+
+function isValidZip() {
+  const zip = $('#zip');
+  const zipVal = /^\d{5}$/;
+  const zipError = $("<p></p>").text("Please enter a valid zip code").css("color", "red");
+  zip.after(zipError);
+  zipError.hide();
+
+  if (zipVal.test($(zip).val())) {
+    zipError.hide();
+    return true;
+  } else {
+    zipError.show();
+    return false;
+  }
+}
+
+function isValidCvv() {
+  const cvv = $('#cvv');
+  const cvvVal = /^[0-9]{3}$/;
+  const cvvError = $("<p></p>").text("Please enter a valid cvv code").css("color", "red");
+  cvv.after(cvvError);
+  cvvError.hide();
+
+  if (cvvVal.test($(cvv).val())) {
+    cvvError.hide();
+    return true;
+  } else {
+    cvvError.show();
+    return false;
+  }
+}
 
 $('form').submit(function(event) {
-  event.preventDefault();
-
-  function isValidName() {
-    const nameInput = $('#name');
-    const nameValidation = /([^\s])/;
-    const nameError = $("<p></p>").text("Please enter a name");
-
-    if (nameValidation.test($(nameInput).val())) {
-      return true;
-    } else {
-      nameInput.after(nameError);
-      return false;
-    }
+  if (!isValidName() || !isValidEmail() || !isValidActivity()){
+    event.preventDefault();
   }
-  isValidName()
-
-  function isValidEmail() {
-    const emailInput = $('#mail');
-    const emailValidation = /^[^@]+@[^@.]+\.[a-z]+$/i;
-    const emailError = $("<p></p>").text("Please enter a valid email address");
-
-    if (emailValidation.test($(emailInput).val())) {
-      return true;
-    } else {
-      emailInput.after(emailError);
-      return false;
-    }
+  if (!isValidCC() || !isValidCvv() || !isValidZip()) {
+    event.preventDefault();
   }
-  isValidEmail()
-
-  function isValidActivity() {
-    const activitySelect = $('.activities');
-    const activityError = $("<p></p>").text("You must select at least one activity");
-    activitySelect.append($(activityError));
-
-    if ($('input[type="checkbox"]').prop("checked")) {
-      return true;
-    } else {
-      activitySelect.after(activityError);
-      return false;
-    }
-  }
-  isValidActivity()
-
-  function isValidCC() {
-    const ccNum = $('#cc-num');
-    const ccNumVal = /^(?:4[0-9]{12}(?:[0-9]{3})?)$/;
-    const ccNumError = $("<p></p>").text("Please enter a valid credit card number");
-
-    if (ccNumVal.test($(ccNum).val())) {
-      return true;
-    } else {
-      ccNum.after(ccNumError);
-      return false;
-    }
-  }
-  isValidCC()
-
-  function isValidZip() {
-    const zip = $('#zip');
-    const zipVal = /^\d{5}$/;
-    const zipError = $("<p></p>").text("Please enter a valid zip code");
-
-    if (zipVal.test($(zip).val())) {
-      return true;
-    } else {
-      zip.after(zipError);
-      return false;
-    }
-  }
-  isValidZip()
-
-  function isValidCvv() {
-    const cvv = $('#cvv');
-    const cvvVal = /^[0-9]{3}$/;
-    const cvvError = $("<p></p>").text("Please enter a valid cvv code");
-
-    if (cvvVal.test($(cvv).val())) {
-      return true;
-    } else {
-      cvv.after(cvvError);
-      return false;
-    }
-  }
-  isValidCvv()
 });
