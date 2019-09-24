@@ -144,13 +144,13 @@ function isValidEmail() {
   }
 }
 
-function isValidActivity() {
-  const activitySelect = $('.activities');
-  const activityError = $("<p></p>").text("You must select at least one activity").css("color", "red");
-  activitySelect.append($(activityError));
-  activitySelect.after(activityError);
-  activityError.hide();
+const activitySelect = $('.activities');
+const activityError = $("<p></p>").text("You must select at least one activity").css("color", "red");
+activitySelect.append($(activityError));
+activitySelect.after(activityError);
+activityError.hide();
 
+function isValidActivity() {
   if ($('input[type="checkbox"]').prop("checked")) {
     activityError.hide();
     return true;
@@ -160,13 +160,13 @@ function isValidActivity() {
   }
 }
 
-function isValidCC() {
-  const ccNum = $('#cc-num');
-  const ccNumVal = /^(?:4[0-9]{12}(?:[0-9]{3})?)$/;
-  const ccNumError = $("<p></p>").text("Please enter a valid credit card number").css("color", "red");
-  ccNum.after(ccNumError);
-  ccNumError.hide();
+const ccNum = $('#cc-num');
+const ccNumVal = /^\d{13,16}$/;
+const ccNumError = $("<p></p>").text("Please enter a valid credit card number").css("color", "red");
+ccNum.after(ccNumError);
+ccNumError.hide();
 
+function isValidCC() {
   if (ccNumVal.test($(ccNum).val())) {
     ccNumError.hide();
     return true;
@@ -176,13 +176,13 @@ function isValidCC() {
   }
 }
 
-function isValidZip() {
-  const zip = $('#zip');
-  const zipVal = /^\d{5}$/;
-  const zipError = $("<p></p>").text("Please enter a valid zip code").css("color", "red");
-  zip.after(zipError);
-  zipError.hide();
+const zip = $('#zip');
+const zipVal = /^\d{5}$/;
+const zipError = $("<p></p>").text("Please enter a valid zip code").css("color", "red");
+zip.after(zipError);
+zipError.hide();
 
+function isValidZip() {
   if (zipVal.test($(zip).val())) {
     zipError.hide();
     return true;
@@ -192,13 +192,13 @@ function isValidZip() {
   }
 }
 
-function isValidCvv() {
-  const cvv = $('#cvv');
-  const cvvVal = /^[0-9]{3}$/;
-  const cvvError = $("<p></p>").text("Please enter a valid cvv code").css("color", "red");
-  cvv.after(cvvError);
-  cvvError.hide();
+const cvv = $('#cvv');
+const cvvVal = /^[0-9]{3}$/;
+const cvvError = $("<p></p>").text("Please enter a valid cvv code").css("color", "red");
+cvv.after(cvvError);
+cvvError.hide();
 
+function isValidCvv() {
   if (cvvVal.test($(cvv).val())) {
     cvvError.hide();
     return true;
@@ -212,7 +212,12 @@ $('form').submit(function(event) {
   if (!isValidName() || !isValidEmail() || !isValidActivity()){
     event.preventDefault();
   }
-  if (!isValidCC() || !isValidCvv() || !isValidZip()) {
-    event.preventDefault();
-  }
+
+    if ($('option[value="Credit Card"]').is(':selected')) {
+      if (!isValidCC() || !isValidCvv() || !isValidZip()) {
+        event.preventDefault();
+      }
+    }
+
+
 });
