@@ -151,7 +151,7 @@ activitySelect.after(activityError);
 activityError.hide();
 
 function isValidActivity() {
-  if ($('input[type="checkbox"]').prop("checked")) {
+  if ($('.activities input:checkbox:checked').length > 0) {
     activityError.hide();
     return true;
   } else {
@@ -159,6 +159,7 @@ function isValidActivity() {
     return false;
   }
 }
+
 
 const ccNum = $('#cc-num');
 const ccNumVal = /^\d{13,16}$/;
@@ -209,15 +210,27 @@ function isValidCvv() {
 }
 
 $('form').submit(function(event) {
-  if (!isValidName() || !isValidEmail() || !isValidActivity()){
+  if (!isValidName()) {
+    event.preventDefault();
+  }
+  if (!isValidEmail()) {
+    event.preventDefault();
+  }
+  if (!isValidActivity()) {
     event.preventDefault();
   }
 
     if ($('option[value="Credit Card"]').is(':selected')) {
-      if (!isValidCC() || !isValidCvv() || !isValidZip()) {
+      if (!isValidCC()) {
+        event.preventDefault();
+      }
+
+      if (!isValidCvv()) {
+        event.preventDefault();
+      }
+
+      if (!isValidZip()) {
         event.preventDefault();
       }
     }
-
-
 });
